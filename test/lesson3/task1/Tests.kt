@@ -70,6 +70,7 @@ class Tests {
         assertEquals(2, digitNumber(10))
         assertEquals(2, digitNumber(99))
         assertEquals(3, digitNumber(123))
+        assertEquals(2, digitNumber(-11))
         assertEquals(10, digitNumber(Int.MAX_VALUE))
     }
 
@@ -148,6 +149,7 @@ class Tests {
         assertTrue(squareBetweenExists(21, 28))
         assertTrue(squareBetweenExists(36, 48))
         assertTrue(squareBetweenExists(50, 64))
+        assertTrue(squareBetweenExists(0, 0))
         assertFalse(squareBetweenExists(51, 61))
         assertFalse(squareBetweenExists(999, 1001))
         assertTrue(squareBetweenExists(152374337, 152423715))
