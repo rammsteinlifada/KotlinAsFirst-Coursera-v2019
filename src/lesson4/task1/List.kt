@@ -3,7 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * Пример
@@ -211,7 +211,25 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var num = n
+    var divisors = mutableListOf<Int>()
+    while (num % 2 == 0) {
+        num /= 2
+        divisors.add(2)
+    }
+    var divisor = 3
+    while (num > 1 && divisor <= sqrt(n.toDouble())) {
+        while (num % divisor == 0) {
+            divisors.add(divisor)
+            num /= divisor
+        }
+        divisor += 2
+    }
+    if (num > 1)
+        divisors.add(num)
+    return divisors
+}
 
 /**
  * Сложная
@@ -220,7 +238,15 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String {
+    var divisors = factorize(n)
+    var ans = ""
+    for (i in divisors) {
+        ans += "$i*"
+    }
+    ans = ans.substring(0, ans.length - 1)
+    return ans
+}
 
 /**
  * Средняя
@@ -231,6 +257,8 @@ fun factorizeToString(n: Int): String = TODO()
  */
 fun convert(n: Int, base: Int): List<Int> {
     var num = n
+    if (n == 0)
+        return listOf(0)
     var list = mutableListOf<Int>()
     while (num > 0) {
         list.add(num % base)
@@ -254,11 +282,12 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     var list = convert(n, base)
     var ans = ""
+    if (n == 0) return "0"
     for (i in list.indices) {
         if (list[i] > 9) {
-            ans.plus((97 + 10 - list[i]).toChar())
+            ans += (87 + list[i]).toChar()
         } else {
-            ans.plus((48 + list[i]).toChar())
+            ans += (48 + list[i]).toChar()
         }
     }
     return ans
@@ -271,7 +300,15 @@ fun convertToString(n: Int, base: Int): String {
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var maxBasePower = base.toDouble().pow(digits.count() - 1).toInt()
+    var ans = 0
+    for (i in digits) {
+        ans += i * maxBasePower
+        maxBasePower /= base
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -285,7 +322,19 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var number = 0
+    var maxBasePower = base.toDouble().pow(str.length - 1).toInt()
+    for (i in str) {
+        if (i in 'a'..'z') {
+            number += i.minus(87).toInt() * maxBasePower
+        } else {
+            number += (i.toInt() - 48) * maxBasePower
+        }
+        maxBasePower /= base
+    }
+    return number
+}
 
 /**
  * Сложная
@@ -295,7 +344,63 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var num = n
+    var ans = ""
+    while (num / 1000 > 0) {
+        num -= 1000
+        ans += "M"
+    }
+    while (num / 900 > 0) {
+        num -= 900
+        ans += "CM"
+    }
+    while (num / 500 > 0) {
+        num -= 500
+        ans += "D"
+    }
+    while (num / 400 > 0) {
+        num -= 400
+        ans += "CD"
+    }
+    while (num / 100 > 0) {
+        num -= 100
+        ans += "C"
+    }
+    while (num / 90 > 0) {
+        num -= 90
+        ans += "XC"
+    }
+    while (num / 50 > 0) {
+        num -= 50
+        ans += "L"
+    }
+    while (num / 40 > 0) {
+        num -= 40
+        ans += "XL"
+    }
+    while (num / 10 > 0) {
+        num -= 10
+        ans += "X"
+    }
+    while (num / 9 > 0) {
+        num -= 9
+        ans += "IX"
+    }
+    while (num / 5 > 0) {
+        num -= 5
+        ans += "V"
+    }
+    while (num / 4 > 0) {
+        num -= 4
+        ans += "IV"
+    }
+    while (num / 1 > 0) {
+        num--
+        ans += "I"
+    }
+    return ans
+}
 
 /**
  * Очень сложная
@@ -304,4 +409,80 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    var ans = ""
+    var num = n
+    var digit = 1
+    while (num > 0) {
+        if (digit == 1 || digit == 4) {
+            if (num % 100 /10 == 1) {
+                if (digit == 4) ans = "тысяч $ans"
+                    when (num % 10) {
+                    1 -> ans = "одиннадцать $ans"
+                    2 -> ans = "двенадцать $ans"
+                    3 -> ans = "тринадцать $ans"
+                    4 -> ans = "четырнадцать $ans"
+                    5 -> ans = "пятнадцать $ans"
+                    6 -> ans = "шестнадцать $ans"
+                    7 -> ans = "семнадцать $ans"
+                    8 -> ans = "восемнадцать $ans"
+                    9 -> ans = "девятнадцать $ans"
+                    0 -> ans = "десять $ans"
+                }
+                digit++
+                num /= 10
+            } else {
+                when (num % 10) {
+                    1 -> if (digit == 4) ans = "одна тысяча $ans"
+                    else ans += "один"
+                    2 -> if (digit == 4) ans = "две тысячи $ans"
+                    else ans += "два"
+                    3 -> if (digit == 4) ans = "три тысячи $ans"
+                    else ans += "три"
+                    4 -> if (digit == 4) ans = "четыре тысячи $ans"
+                    else ans += "четыре"
+                    5 -> if (digit == 4) ans = "пять тысяч $ans"
+                    else ans += "пять"
+                    6 -> if (digit == 4) ans = "шесть тысяч $ans"
+                    else ans += "шесть"
+                    7 -> if (digit == 4) ans = "семь тысяч $ans"
+                    else ans += "семь"
+                    8 -> if (digit == 4) ans = "восемь тысяч $ans"
+                    else ans += "восемь"
+                    9 -> if (digit == 4) ans = "девять тысяч $ans"
+                    else ans += "девять"
+                    0 -> if (digit == 4) ans = "тысяч $ans"
+                }
+            }
+        }
+        if (digit == 2 || digit == 5) {
+            when (num % 10) {
+                2 -> ans = "двадцать $ans"
+                3 -> ans = "тридцать $ans"
+                4 -> ans = "сорок $ans"
+                5 -> ans = "пятьдесят $ans"
+                6 -> ans = "шестьдесят $ans"
+                7 -> ans = "семьдесят $ans"
+                8 -> ans = "восемьдесят $ans"
+                9 -> ans = "девяносто $ans"
+            }
+        }
+        if (digit == 3 || digit == 6) {
+            when (num % 10) {
+                1 -> ans = "сто $ans"
+                2 -> ans = "двести $ans"
+                3 -> ans = "триста $ans"
+                4 -> ans = "четыреста $ans"
+                5 -> ans = "пятьсот $ans"
+                6 -> ans = "шестьсот $ans"
+                7 -> ans = "семьсот $ans"
+                8 -> ans = "восемьсот $ans"
+                9 -> ans = "девятьсот $ans"
+            }
+        }
+        num /= 10
+        digit++
+    }
+    ans = ans.trim()
+    return ans
+}

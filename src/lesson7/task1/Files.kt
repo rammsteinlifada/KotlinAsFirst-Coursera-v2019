@@ -53,7 +53,28 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    var ans = mutableMapOf<String, Int>()
+    for (i in substrings) {
+        ans[i] = 0
+    }
+    for (ln in File(inputName).readLines()) {
+        var words = ln.split(" ")
+        for (word in ans.keys) {
+            for (string in words) {
+                var str = string.toLowerCase()
+                var cnt = 0
+                while (str.contains(word.toLowerCase())) {
+                    str = str.substring(0, str.indexOf(word.toLowerCase())) + '\n' +
+                            str.substring(str.indexOf(word.toLowerCase()) + 1)
+                    cnt++
+                }
+                ans[word] = ans[word]!! + cnt
+            }
+        }
+    }
+    return ans
+}
 
 
 /**
@@ -70,7 +91,26 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    var outputStream = File(outputName).bufferedWriter()
+    for (ln1 in File(inputName).readLines()) {
+        var ln = ln1.toCharArray()
+        for (i in 1 until ln.count()) {
+            if ((ln[i - 1].toLowerCase() == 'ж') || (ln[i - 1].toLowerCase() == 'ч')
+                || (ln[i - 1].toLowerCase() == 'ш') || (ln[i - 1].toLowerCase() == 'щ')
+            ) {
+                when (ln[i]) {
+                    'Ы' -> ln[i] = 'И'
+                    'ы' -> ln[i] = 'и'
+                    'Я' -> ln[i] = 'А'
+                    'я' -> ln[i] = 'а'
+                    'Ю' -> ln[i] = 'У'
+                    'ю' -> ln[i] = 'у'
+                }
+            }
+        }
+        outputStream.write(ln + '\n')
+    }
+    outputStream.close()
 }
 
 /**

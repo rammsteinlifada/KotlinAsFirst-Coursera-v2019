@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import ru.spbstu.kotlin.typeclass.classes.defaultMonoids
+
 /**
  * Пример
  *
@@ -69,7 +71,53 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val date = str.split(" ")
+    if (date.count() != 3) {
+        return ""
+    }
+    val d = date[0]
+    val m = date[1]
+    val y = date[2]
+    var d1 = 0
+    var m1 = -1
+    var y1 = 0
+    try {
+        d1 = date[0].toInt()
+        y1 = date[2].toInt()
+    } catch (e: NumberFormatException) {
+        return ""
+    }
+    when (m) {
+        "января" -> m1 = 1
+        "февраля" -> m1 = 2
+        "марта" -> m1 = 3
+        "апреля" -> m1 = 4
+        "мая" -> m1 = 5
+        "июня" -> m1 = 6
+        "июля" -> m1 = 7
+        "августа" -> m1 = 8
+        "сентября" -> m1 = 9
+        "октября" -> m1 = 10
+        "ноября" -> m1 = 11
+        "декабря" -> m1 = 12
+        else -> return ""
+    }
+    when (m1) {
+        1, 3, 5, 7, 8, 10, 12 -> if (d1 !in 1..31) return ""
+        else -> if (d1 !in 1..30) return ""
+    }
+    if (m1 == 2) {
+        if ((y1 % 400 == 0) || (y1 % 4 == 0) && (y1 % 100 != 0)) {
+            if (d1 !in 1..29) {
+                return ""
+            }
+        } else if (d1 !in 1..28) {
+            return ""
+        }
+    }
+    return String.format("%02d.%02d.%d", d1, m1, y1)
+}
 
 /**
  * Средняя
@@ -81,7 +129,44 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    var date = digital.split(".")
+    if (date.count() != 3) {
+        return ""
+    }
+    var day = date[0].toInt()
+    var year = date[2].toInt()
+    var month = when (date[1]) {
+        "01" -> "января"
+        "02" -> "февраля"
+        "03" -> "марта"
+        "04" -> "апреля"
+        "05" -> "мая"
+        "06" -> "июня"
+        "07" -> "июля"
+        "08" -> "августа"
+        "09" -> "сентября"
+        "10" -> "октября"
+        "11" -> "ноября"
+        "12" -> "декабря"
+        else -> return ""
+    }
+    when (month.toInt()) {
+        1, 3, 5, 7, 8, 10, 12 -> if (day !in 1..31) return ""
+        else -> if (day !in 1..30) return ""
+    }
+    if (month.toInt() == 2) {
+        if (year % 400 == 0 || year % 4 == 0 && year % 100 != 0) {
+            if (day !in 1..29) {
+                return ""
+            }
+        } else if (day !in 1..28) {
+            return ""
+        }
+    }
+    return String.format("%d %s %d", day, month, year)
+}
+
 
 /**
  * Средняя
@@ -97,7 +182,18 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    var ans = ""
+    for (i in phone) {
+        if (i == ' ' || i == '-' || i == '(' || i == ')')
+            continue
+        if (i in '0'..'9' || i == '+') {
+            ans += i
+        } else
+            return ""
+    }
+    return ans
+}
 
 /**
  * Средняя
@@ -109,7 +205,23 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    var results = jumps.split(" ")
+    var max = -1
+    for (i in results) {
+        try {
+            var length = i.toInt()
+            if (length > max) {
+                max = length
+            }
+        } catch (e: NumberFormatException) {
+            if (!((i == "-") || (i == "%"))) {
+                return -1
+            }
+        }
+    }
+    return max
+}
 
 /**
  * Сложная
@@ -122,7 +234,38 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    var results = jumps.split(" ")
+    var max = -1
+    var lastHeight = 0
+    var tmp = mutableMapOf<Int, String>()
+    for (i in 0 until results.count()) {
+        if (i % 2 == 0) {
+            try {
+                lastHeight = results[i].toInt()
+                tmp[lastHeight] = ""
+            } catch (e: NumberFormatException) {
+                return -1
+            }
+        } else {
+            for (letter in results[i]) {
+                if (!((letter == '+') || (letter == '%') || (letter == '-'))) {
+                    return -1
+                } else {
+                    tmp[lastHeight] = results[i]
+                }
+            }
+        }
+    }
+    for ((h, tries) in tmp) {
+        for (sym in tries) {
+            if ((sym == '+') && (h > max)) {
+                max = h
+            }
+        }
+    }
+    return max
+}
 
 /**
  * Сложная
@@ -144,7 +287,15 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    var words = str.toLowerCase().split(" ")
+    for (i in 0 until (words.count() - 1)) {
+        if (words[i] == words[i + 1]) {
+            return str.toLowerCase().indexOf(words[i] + " " + words[i])
+        }
+    }
+    return -1
+}
 
 /**
  * Сложная
@@ -157,7 +308,31 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    var items = description.split("; ")
+    var map = mutableMapOf<String, Double>()
+    var price = -1.0
+    var name = ""
+    for (i in items) {
+        try {
+            var j = i.split(" ")
+            if (j.count() == 2) {
+                map[j[0]] = j[1].toDouble()
+            } else {
+                return ""
+            }
+        } catch (e: NumberFormatException) {
+            return ""
+        }
+    }
+    for ((name_, price_) in map) {
+        if (price_ > price) {
+            price = price_
+            name = name_
+        }
+    }
+    return name
+}
 
 /**
  * Сложная
@@ -170,7 +345,44 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    val numbers = roman.split(" ")
+    val tmp = mutableListOf<Int>()
+    val ans = mutableListOf<Int>()
+    var sum = 0
+    if (numbers.count() != 1) {
+        return -1
+    }
+    for (letter in numbers[0]) {
+        when (letter) {
+            'I' -> tmp.add(1)
+            'V' -> tmp.add(5)
+            'X' -> tmp.add(10)
+            'L' -> tmp.add(50)
+            'C' -> tmp.add(100)
+            'D' -> tmp.add(500)
+            'M' -> tmp.add(1000)
+            else -> return -1
+        }
+    }
+    tmp.add(0)
+    tmp.add(0)
+    var i = 0
+    while (i < (tmp.count() - 2)) {
+        sum = tmp[i]
+        while ((i < (tmp.count() - 2)) && (tmp[i] == tmp[i + 1])) {
+            sum += tmp[i]
+            i++
+        }
+        if (tmp[i + 1] > sum) {
+            sum *= -1
+        }
+        ans.add(sum)
+        sum = 0
+        i++
+    }
+    return ans.sum()
+}
 
 /**
  * Очень сложная

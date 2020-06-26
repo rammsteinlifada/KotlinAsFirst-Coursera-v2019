@@ -5,6 +5,7 @@ package lesson1.task1
 
 import junit.framework.TestCase.*
 import lesson3.task1.factorial
+import lesson4.task1.convert
 import org.junit.*
 import kotlin.math.*
 
@@ -53,16 +54,59 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  * Пример главной функции
  */
 fun main() {
-    var list = listOf<Int>(12,33)
+    var num = 1
     var ans = ""
-    println(list[0])
-    println((97 + 10 - list[0]))
-    for (i in list.indices) {
-        if (list[i] > 9) {
-            ans.plus((97 + 10 - list[i]).toChar())
-        } else {
-            ans.plus((48 + list[i]).toChar())
-        }
+    while (num % 1000 == 0 && num > 0) {
+        num -= 1000
+        ans += "M"
+    }
+    while (num % 900 == 0 && num > 0) {
+        num -= 900
+        ans += "CM"
+    }
+    while (num % 500 == 0 && num > 0) {
+        num -= 500
+        ans += "D"
+    }
+    while (num % 400 == 0 && num > 0) {
+        num -= 400
+        ans += "CD"
+    }
+    while (num % 100 == 0 && num > 0) {
+        num -= 100
+        ans += "C"
+    }
+    while (num % 90 == 0 && num > 0) {
+        num -= 90
+        ans += "XC"
+    }
+    while (num % 50 == 0 && num > 0) {
+        num -= 50
+        ans += "L"
+    }
+    while (num % 40 == 0 && num > 0) {
+        num -= 40
+        ans += "XL"
+    }
+    while (num % 10 == 0 && num > 0) {
+        num -= 10
+        ans += "X"
+    }
+    while (num % 9 == 0 && num > 0) {
+        num -= 9
+        ans += "IX"
+    }
+    while (num % 5 == 0 && num > 0) {
+        num -= 5
+        ans += "V"
+    }
+    while (num % 4 == 0 && num > 0) {
+        num -= 4
+        ans += "IV"
+    }
+    while (num % 1 == 0 && num > 0) {
+        num--
+        ans += "I"
     }
     println(ans)
 }
